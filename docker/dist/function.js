@@ -10,8 +10,12 @@ app.post('/run', function (req, res) {
     var contents;
     var encoded;
     var path = payload['__ow_path'];
+    console.log('path: ');
+    console.log(path);
     var fileType = path.substring(path.lastIndexOf('.') + 1, path.length);
     fileType = fileType.toLowerCase();
+    console.log('fileType: ');
+    console.log(fileType);
     switch (fileType) {
         case "png":
             contents = fs.readFileSync(__dirname + '/build/' + path);
@@ -21,6 +25,7 @@ app.post('/run', function (req, res) {
                 statusCode: 200,
                 body: encoded
             };
+            break;
         case "html":
             contents = fs.readFileSync(__dirname + '/build/' + path, 'UTF-8');
             contents = {
@@ -35,6 +40,23 @@ app.post('/run', function (req, res) {
                 headers: { 'Content-Type': 'application/javascript' },
                 statusCode: 200,
                 body: contents
+            };
+            break;
+        case "css":
+            contents = fs.readFileSync(__dirname + '/build/' + path, 'UTF-8');
+            contents = {
+                headers: { 'Content-Type': 'text/css' },
+                statusCode: 200,
+                body: contents
+            };
+            break;
+        case "ico":
+            contents = fs.readFileSync(__dirname + '/build/' + path);
+            encoded = new Buffer(contents).toString('base64');
+            contents = {
+                headers: { 'Content-Type': 'image/x-icon' },
+                statusCode: 200,
+                body: encoded
             };
             break;
         default:
